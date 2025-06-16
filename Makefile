@@ -27,7 +27,7 @@ $(BUILD_DIR)/sensor.o: $(SRC_DIR)/sensor.c $(SRC_DIR)/sensor.h | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/test_sensor.o: $(TEST_DIR)/test_sensor.c $(SRC_DIR)/sensor.h | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -Dget_sensor_value=__wrap_get_sensor_value -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
 
 # CI 用的測試目標
 test: $(TARGET)
