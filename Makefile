@@ -1,19 +1,26 @@
 CC = gcc
-CFLAGS = -Wall -Itest
+CFLAGS = -Wall -Wextra -g
+LDFLAGS = -lcmocka
 
-SRC = src/math.c
-TEST_SRC = test/test_math.c test/unity.c
-TARGET = test_runner
+TARGET = test
+OBJS = sensor.o test_sensor.o
 
 .PHONY: all clean test
 
 all: $(TARGET)
 
-$(TARGET): $(SRC) $(TEST_SRC)
-	$(CC) $(CFLAGS) -o $@ $^
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^ $(LDFLAGS)
 
+sensor.o: sensor.c sensor.h
+	$(CC) $(CFLAGS) -c sensor.c -o $@
+
+test_sensor.o: test_sensor.c sensor.h
+	$(CC) $(CFLAGS) -c test_sensor.c -Dget_sensor_value=__wrap_get_sensor_value -o $@
+
+# ✅ 測試用 (for CI/CD)
 test: $(TARGET)
 	./$(TARGET)
 
 clean:
-	rm -f $(TARGET)
+	rm -f *.o $(TARGET)
