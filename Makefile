@@ -7,10 +7,10 @@ SRC_DIR = src
 TEST_DIR = test
 BUILD_DIR = build
 
-SRC_FILES = $(SRC_DIR)/sensor.c
+SRC_FILES = $(SRC_DIR)/sensor.c $(SRC_DIR)/get_sensor_value.c
 TEST_FILES = $(TEST_DIR)/test_sensor.c
 
-OBJS = $(BUILD_DIR)/sensor.o $(BUILD_DIR)/test_sensor.o
+OBJS = $(BUILD_DIR)/sensor.o $(BUILD_DIR)/get_sensor_value.o $(BUILD_DIR)/test_sensor.o
 TARGET = $(BUILD_DIR)/test
 
 .PHONY: all clean test
@@ -24,6 +24,9 @@ $(TARGET): $(OBJS) | $(BUILD_DIR)
 	$(CC) -o $@ $^ $(LDFLAGS)
 
 $(BUILD_DIR)/sensor.o: $(SRC_DIR)/sensor.c $(SRC_DIR)/sensor.h | $(BUILD_DIR)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/get_sensor_value.o: $(SRC_DIR)/get_sensor_value.c | $(BUILD_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 $(BUILD_DIR)/test_sensor.o: $(TEST_DIR)/test_sensor.c $(SRC_DIR)/sensor.h | $(BUILD_DIR)
