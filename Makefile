@@ -32,7 +32,7 @@ $(BUILD_DIR):
 $(TARGET): $(TEST_SOURCES) $(C_OBJS)
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-run: $(TARGET)
+test:  $(TARGET)
 	./$(TARGET)
 
 clean:
