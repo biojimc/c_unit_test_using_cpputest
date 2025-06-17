@@ -1,40 +1,34 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -g -Isrc
-# 增加 -Wl,--wrap=get_sensor_value 讓 linker 攔截 get_sensor_value 的呼叫
-LDFLAGS = -lcmocka -Wl,--wrap=get_sensor_value
+# 編譯器
+CXX = g++
+CXXFLAGS = -I/usr/local/include -std=c++11
+LDFLAGS = -L/usr/local/lib -lCppUTest -lCppUTestExt
 
 SRC_DIR = src
 TEST_DIR = test
 BUILD_DIR = build
 
-SRC_FILES = $(SRC_DIR)/sensor.c $(SRC_DIR)/get_sensor_value.c
-TEST_FILES = $(TEST_DIR)/test_sensor.c
 
-OBJS = $(BUILD_DIR)/sensor.o $(BUILD_DIR)/get_sensor_value.o $(BUILD_DIR)/test_sensor.o
-TARGET = $(BUILD_DIR)/test
+SRCS = $(wildcard $(SRC_DIR)/*.c)
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $(SRCS))
 
-.PHONY: all clean test
-
-all: $(TARGET)
+TEST = $(TEST_DIR)/test_logic.cpp
+TARGET = $(BUILD_DIR)/run_tests
 
 $(BUILD_DIR):
 	mkdir -p $(BUILD_DIR)
 
-$(TARGET): $(OBJS) | $(BUILD_DIR)
-	$(CC) -o $@ $^ $(LDFLAGS)
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/sensor.o: $(SRC_DIR)/sensor.c $(SRC_DIR)/sensor.h | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+$(TARGET): $(TEST) $(OBJS) | $(BUILD_DIR)
+	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
-$(BUILD_DIR)/get_sensor_value.o: $(SRC_DIR)/get_sensor_value.c | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
+.PHONY: run clean
+all: $(TARGET)
 
-$(BUILD_DIR)/test_sensor.o: $(TEST_DIR)/test_sensor.c $(SRC_DIR)/sensor.h | $(BUILD_DIR)
-	$(CC) $(CFLAGS) -c $< -o $@
-
-# CI 用的測試目標
 test: $(TARGET)
 	./$(TARGET)
 
 clean:
 	rm -rf $(BUILD_DIR)
+
