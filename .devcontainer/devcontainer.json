@@ -1,4 +1,14 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/cpp:noble",
-  "features": {}
+  "name": "C/C++ with CppUTest",
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
+  "settings": {},
+  "extensions": [
+    "ms-vscode.cpptools"
+  ],
+  "forwardPorts": [],
+  "postCreateCommand": "echo 'CppUTest ready!'",
+  "remoteUser": "vscode"
 }
+
