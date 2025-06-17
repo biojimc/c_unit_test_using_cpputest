@@ -7,6 +7,7 @@ extern "C" {
 
 #include "CppUTest/TestHarness.h"
 #include "CppUTestExt/MockSupport.h"
+#include "CppUTest/CommandLineTestRunner.h"
 
 // 🔁 模擬 C 函式
 extern "C" int read_sensor_value(void) {
@@ -21,15 +22,15 @@ TEST_GROUP(SensorLogic) {
 
 TEST(SensorLogic, SensorAboveThreshold) {
     mock().expectOneCall("read_sensor_value").andReturnValue(42);
-    //CHECK_EQUAL(1, process_sensor());
+    CHECK_EQUAL(1, process_sensor());
 }
 
 TEST(SensorLogic, SensorBelowThreshold) {
     mock().expectOneCall("read_sensor_value").andReturnValue(10);
-//    CHECK_EQUAL(0, process_sensor());
+    CHECK_EQUAL(0, process_sensor());
 }
 
-int main(void) {
-  printf("main\n");
-  return 0;
+int main(int argc, char** argv)
+{
+    return CommandLineTestRunner::RunAllTests(argc, argv);
 }
